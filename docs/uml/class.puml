@@ -1,0 +1,57 @@
+@startuml
+
+class "code.js" as ColorsClient <<JavaScript module>> {
+    - userId : int
+    - firstName : string
+    - lastName : string
+
+    + doLogin()
+    + saveCookie()
+    + readCookie()
+    + doLogout()
+    + addColor()
+    + searchColor()
+}
+
+class "Login.php" as LoginAPI <<PHP endpoint>> {
+    + getRequestInfo()
+    + returnWithInfo(firstName, lastName, id)
+    + returnWithError(error)
+}
+
+class "AddColor.php" as AddColorAPI <<PHP endpoint>> {
+    + getRequestInfo()
+    + returnWithError(error)
+}
+
+class "SearchColors.php" as SearchColorsAPI <<PHP endpoint>> {
+    + getRequestInfo()
+    + returnWithInfo(searchResults)
+    + returnWithError(error)
+}
+
+class User <<database entity>> {
+    + ID : int
+    + FirstName : varchar(50)
+    + LastName : varchar(50)
+    + Login : varchar(50)
+    + Password : varchar(50)
+}
+
+class Color <<database entity>> {
+    + ID : int
+    + Name : varchar(50)
+    + UserID : int
+}
+
+ColorsClient ..> LoginAPI : POST login, password
+ColorsClient ..> AddColorAPI : POST color, userId
+ColorsClient ..> SearchColorsAPI : POST search, userId
+
+LoginAPI ..> User : SELECT
+AddColorAPI ..> Color : INSERT
+SearchColorsAPI ..> Color : SELECT
+
+User "1" -- "0..*" Color : owns
+
+@enduml
