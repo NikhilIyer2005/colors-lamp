@@ -1,0 +1,62 @@
+@startuml
+
+start
+
+:Display login page;
+
+repeat
+    :User enters username and password;
+    :Browser sends POST request to Login.php;
+    :Login.php queries Users table;
+
+    if (Matching user found?) then (yes)
+        :Return user ID, first name,\nand last name;
+        :Save login information in cookie;
+    else (no)
+        :Return login error;
+        :Display incorrect username/password message;
+    endif
+
+repeat while (Login failed?) is (yes)
+
+:Open color.html;
+:Read login cookie;
+
+if (Valid login cookie?) then (yes)
+
+    repeat
+        :User chooses an action;
+
+        switch (Action?)
+            case (Add Color)
+                :Enter color name;
+                :Send color and userId\nto AddColor.php;
+                :Insert color into Colors table;
+                :Display "Color has been added";
+
+            case (Search Colors)
+                :Enter search text;
+                :Send search text and userId\nto SearchColors.php;
+                :Search Colors table using\ncolor name and userId;
+
+                if (Matching colors found?) then (yes)
+                    :Return matching colors;
+                    :Display matching colors;
+                else (no)
+                    :Return search error;
+                endif
+
+            case (Log Out)
+                :Clear login cookie;
+        endswitch
+
+    repeat while (User did not log out?) is (yes)
+
+else (no)
+endif
+
+:Return to login page;
+
+stop
+
+@enduml
