@@ -10,7 +10,10 @@ export default [
         languageOptions: {
             ecmaVersion: "latest",
             sourceType: "script",
-            globals: globals.browser,
+            globals: {
+                ...globals.browser,
+                module: "readonly",
+            },
         },
         rules: {
             ...js.configs.recommended.rules,
